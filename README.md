@@ -1,4 +1,4 @@
-# drift_bottle
+# flutter 社交app 集成环信IM
 
 A new Flutter project.
 
