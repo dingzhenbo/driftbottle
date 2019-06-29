@@ -29,7 +29,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             decoration: BoxDecoration(
               color:Colors.cyan,
               image:DecorationImage(
-                image:NetworkImage("https://preview.qiantucdn.com/58pic/34/88/34/92a58PIC2peDIceZh3c6X_PIC2018.jpg!w1024_small"),
+                image:NetworkImage("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=221593033,8564015&fm=26&gp=0.jpg"),
                 fit:BoxFit.cover,
                 colorFilter:ColorFilter.mode(Colors.cyan.withOpacity(0.5), BlendMode.screen)
               )

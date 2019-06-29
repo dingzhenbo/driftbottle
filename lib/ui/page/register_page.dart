@@ -1,8 +1,16 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:drift_bottle/dto/base_reslut.dart';
+import 'package:drift_bottle/dto/base_reslut.dart' as prefix0;
+import 'package:drift_bottle/main.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
+import 'package:drift_bottle/utils/dio_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:drift_bottle/dto/base_reslut.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -36,9 +44,8 @@ class _RegisterPageState extends State<RegisterPage> {
       key: _scaffoldkey,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Center(
-          child: Text('注册', style: TextStyle(color: Colors.black)),
-        ),
+        centerTitle: true,
+        title: Text("注册") ,
       ),
       body: Form(
         key: _formKey,
@@ -59,18 +66,33 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(height: 35),
                     registerPasswrodTestField(),
                     SizedBox(height: 35),
-                    registerValidateTestField(),
+                    Stack(
+                      children: <Widget>[
+                        registerValidateTestField(),
+                        Positioned(
+                          right:45,
+                          top: 5,
+
+                          child: MaterialButton(
+                            child: Text('获取验证码'),
+                            color: Colors.cyan,
+                            onPressed: (){},
+                          ),
+                        )
+                      ],
+                    )
+
                   ],
                 ),
               ),
-              SizedBox(height: 30),
-              registerButton(),
               SizedBox(height: 50),
+              registerButton(),
+              SizedBox(height: 40),
               Center(
                 child: Text('其他方式登录'),
               ),
               Divider(color: Colors.black, height: 2.0, indent: 2.0),
-              SizedBox(height: 30),
+              SizedBox(height: 20),
               Container(
                 child: buildOtherMethod(context),
               )
@@ -111,17 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: RaisedButton(
           color: Colors.cyan.withOpacity(0.8),
           child: Text("注册"),
-          onPressed: () async {
-            if (_formKey.currentState.validate()) {
-              _formKey.currentState.save();
-              String result = await ChannelUtils.register(_account,_password);
-              /*_scaffoldkey.currentState.showSnackBar(SnackBar(content: Text(result)));*/
-              _RegisterDialog(result);
-            }
-            setState(() {
-              _autovalidate = true;
-            });
-          },
+          onPressed:registerOnPressed,
           shape: StadiumBorder(side: BorderSide()),
         ),
       ),
@@ -157,7 +169,6 @@ class _RegisterPageState extends State<RegisterPage> {
       },
       decoration: InputDecoration(
         labelText: "验证码",
-        suffixText: '获取验证码',
         suffixIcon: IconButton(
           icon: Icon(Icons.send, color: _color),
           onPressed: () {
@@ -210,5 +221,29 @@ class _RegisterPageState extends State<RegisterPage> {
               ))
           .toList(),
     );
+  }
+
+
+
+
+  //点击注册
+  Future registerOnPressed() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      String result = await ChannelUtils.register(_account,_password); //环信注册返回注册结果
+      if(result=="ok"){
+       Map map =  await HttpUtils.request("account/reg",data: {"emId":_account,"password":_password},method: HttpUtils.POST ,mode: HttpUtils.queryParameters);
+       BaseResult baseResult =  BaseResult.fromJson(map);
+       if(baseResult.result=="ok"){
+         _RegisterDialog("注册成功啦。");
+       }
+      }else{
+        _RegisterDialog("注册失败啦，账户已经存在。");
+      }
+
+    }
+    setState(() {
+      _autovalidate = true;
+    });
   }
 }

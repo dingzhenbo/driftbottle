@@ -1,12 +1,16 @@
+import 'package:dio/dio.dart';
+import 'package:drift_bottle/ui/page/contacts_details_page.dart';
+import 'package:drift_bottle/ui/page/friends_page.dart';
 import 'package:drift_bottle/ui/page/home_page.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+Dio dio = new Dio();
 void main() async{
-  AutoLogin.autoLogin= await ChannelUtils.autoLogin();
 
+  AutoLogin.autoLogin= await ChannelUtils.autoLogin();
   runApp(App());
 }
 
@@ -37,15 +41,6 @@ class App extends StatelessWidget {
   }
 
 
-
-/*    Future<Widget> isLogin() async {
-    String result =  await ChannelUtils.autoLogin();
-    if(result=="ok"){
-      return HomePage();
-    }else{
-      return LoginPage();
-    }
-  }*/
 }
 
 
@@ -64,7 +59,7 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin{
 
 
   @override
-  void initState() {
+  Future initState(){
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 3000));
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller);
     //上面两行代码表示初始化一个Animation控制器， vsync垂直同步，动画执行时间3000毫秒,然后我们设置一个Animation动画，使用上面设置的控制器

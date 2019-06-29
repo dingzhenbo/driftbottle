@@ -4,6 +4,7 @@ import 'package:drift_bottle/utils/channel_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -35,13 +36,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(),
         body: Form(
             key: _formKey,
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 22.0),
               children: <Widget>[
-                SizedBox(height: 40.0),
+                SizedBox(height: 80.0),
                 buildPortrait(),
                 SizedBox(height: 50.0),
                 buildEmailTextField(),
@@ -131,8 +131,6 @@ class _LoginPageState extends State<LoginPage> {
               //TODO 执行登录方法
               _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("正在登录....")));
               String result= await ChannelUtils.login(_loginName,_password);
-              print('email:$_loginName , assword:$_password，result:$result');
-
               if(result=="登录成功"){
                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context)=>HomePage()),(Route<dynamic> route)=>false);
               }else{
@@ -149,6 +147,8 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  //提示框
   _loginAlertDialog(content){
     return showDialog(
         context: context,

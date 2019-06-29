@@ -19,7 +19,7 @@ public class EMClientUtil {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            result.success("注册成功啦");
+                            result.success("ok");
                         }
                     });
                 } catch (HyphenateException e) {
@@ -27,7 +27,7 @@ public class EMClientUtil {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            result.success("注册失败，账号已存在");
+                            result.success("not_ok");
                         }
                     });
                 }
@@ -49,7 +49,6 @@ public class EMClientUtil {
                                 EMClient.getInstance().groupManager().loadAllGroups();
                                 EMClient.getInstance().chatManager().loadAllConversations();
                                 Log.d("main", "登录聊天服务器成功！");
-                                System.out.println("===================成功");
                                 result.success("登录成功");
                             }
                         });

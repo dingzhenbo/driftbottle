@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:drift_bottle/custom_widget/custom_drawer.dart';
+import 'package:drift_bottle/ui/page/contacts_page.dart';
 import 'package:drift_bottle/ui/page/driftbottle_page.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
@@ -35,27 +36,32 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
+            title:TabBar(
+              indicatorPadding: EdgeInsets.zero,
+              unselectedLabelColor: Colors.black,
+              indicatorColor: Colors.black54,
+              indicatorSize: TabBarIndicatorSize.label,
+
+
+              tabs: <Widget>[
+                Tab(text: '首页'),
+                Tab(text: '联系人'),
+                Tab(text: "消息",)
+              ],
+            ) ,
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () {},
               )
             ],
-            bottom: TabBar(
-              unselectedLabelColor: Colors.black38,
-              indicatorColor: Colors.black54,
-              tabs: <Widget>[
-                Tab(text: '漂流瓶', icon: Icon(Icons.opacity)),
-                Tab(text: '好友', icon: Icon(Icons.account_circle)),
-                Tab(text: '消息', icon: Icon(Icons.message))
-              ],
-            ),
+
           ),
           body: TabBarView(
             children: <Widget>[
               DriftBottlePage(),
-              DriftBottlePage(),
-              DriftBottlePage(),
+              ContactsPage(),
+              DriftBottlePage()
             ],
           ),
           drawer: CustomDrawer(),
