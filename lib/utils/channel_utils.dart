@@ -27,5 +27,15 @@ class ChannelUtils{
      _channel.invokeMethod("loginOut");
   }
 
+  static getCurrentUser() async {
+   String result = await _channel.invokeMethod("getCurrentUser");
+   return result;
+  }
+
+  static getToken() async {
+    String result = await _channel.invokeMethod("getToken");
+    return result;
+  }
+
 
 }

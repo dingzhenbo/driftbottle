@@ -1,13 +1,13 @@
-import 'package:dio/dio.dart';
-import 'package:drift_bottle/ui/page/contacts_details_page.dart';
-import 'package:drift_bottle/ui/page/friends_page.dart';
+
+import 'package:drift_bottle/ui/page/chat_page.dart';
 import 'package:drift_bottle/ui/page/home_page.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
+import 'package:drift_bottle/utils/dio_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Dio dio = new Dio();
+import 'custom_widget/global_data_provider.dart';
 void main() async{
 
   AutoLogin.autoLogin= await ChannelUtils.autoLogin();
@@ -19,12 +19,21 @@ class AutoLogin{
   static String autoLogin;
   static Widget home(){
     if(autoLogin=="ok"){
+      globalDataInit(); //
       return HomePage();
     }else{
       return LoginPage();
     }
   }
+
+  ///初始化全局数据
+  static globalDataInit() async {
+    GlobalDataProvider.emId= await ChannelUtils.getCurrentUser();
+    GlobalDataProvider.id =  await HttpUtils.request("account/get/id/${GlobalDataProvider.emId}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+    GlobalDataProvider.token = await ChannelUtils.getToken();
+  }
 }
+
 
 class App extends StatelessWidget {
 
@@ -59,7 +68,7 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin{
 
 
   @override
-  Future initState(){
+   initState(){
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 3000));
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller);
     //上面两行代码表示初始化一个Animation控制器， vsync垂直同步，动画执行时间3000毫秒,然后我们设置一个Animation动画，使用上面设置的控制器

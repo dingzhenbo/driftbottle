@@ -1,6 +1,9 @@
+import 'package:drift_bottle/custom_widget/global_data_provider.dart';
+import 'package:drift_bottle/custom_widget/global_data_provider.dart' as prefix0;
 import 'package:drift_bottle/ui/page/home_page.dart';
 import 'package:drift_bottle/ui/page/register_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
+import 'package:drift_bottle/utils/dio_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -74,9 +77,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
+                  //TODO 跳转到注册页面
                     builder: (BuildContext context) => RegisterPage()));
-                //TODO 跳转到注册页面
-                print('去注册');
                 /*  Navigator.pop(context);*/
               },
             ),
@@ -132,6 +134,11 @@ class _LoginPageState extends State<LoginPage> {
               _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("正在登录....")));
               String result= await ChannelUtils.login(_loginName,_password);
               if(result=="登录成功"){
+                ///初始化全局数据
+                GlobalDataProvider.emId = await ChannelUtils.getCurrentUser();  //获取当前登录环信id
+                GlobalDataProvider.id =  await HttpUtils.request("account/get/id/${GlobalDataProvider.emId}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+                GlobalDataProvider.token = await ChannelUtils.getToken(); //获取token
+                
                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context)=>HomePage()),(Route<dynamic> route)=>false);
               }else{
                 _loginAlertDialog(result);
@@ -231,6 +238,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+
+  //头像
   Center buildPortrait() {
     return Center(
       child: ClipOval(

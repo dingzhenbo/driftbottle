@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:drift_bottle/custom_widget/custom_drawer.dart';
+import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/ui/page/contacts_page.dart';
 import 'package:drift_bottle/ui/page/driftbottle_page.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
+import 'package:drift_bottle/ui/page/search_bar.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,14 +47,16 @@ class _HomePageState extends State<HomePage> {
 
               tabs: <Widget>[
                 Tab(text: '首页'),
-                Tab(text: '联系人'),
+                Tab(text: '关注'),
                 Tab(text: "消息",)
               ],
             ) ,
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {},
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  showSearch(context: context, delegate: SearchBar());
+                },
               )
             ],
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:drift_bottle/custom_widget/common_widget.dart';
+import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/dto/account.dart';
 import 'package:drift_bottle/dto/base_reslut.dart';
 import 'package:drift_bottle/utils/dio_utils.dart';
@@ -10,28 +11,26 @@ import 'package:flutter/material.dart';
 /// 通讯录 => 详细
 /// 2019-03-23
 class ContactsDetailsPage extends StatefulWidget {
-  final String id;
-  ContactsDetailsPage({this.id});
+  final String emid;
+  ContactsDetailsPage({this.emid});
   @override
   _ContactsDetailsPageState createState() => _ContactsDetailsPageState();
 
 }
 
 class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
-  BaseResult baseResult;
+
   String _attentionText="关注";
   IconData _attentionIcon = Icons.add;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      key: _scaffoldKey,
       body: FutureBuilder(
-        future:getBaseResult(widget.id),
+        future:getBaseResult(widget.emid),
         builder:(BuildContext context,AsyncSnapshot<BaseResult> snapshot){
           if(snapshot.hasData){
             if(snapshot.data.result=="ok"){
-              Account account =  Account.fromJson(snapshot.data.data);
+              Account account =  Account.fromJson(snapshot.data.data);  //获取用户信息
               return  Stack(
                 children: <Widget>[
                   Container(
@@ -109,9 +108,11 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                       onTap: (){
                         setState(() {
                           if(_attentionText=="关注"){
+                            HttpUtils.request("account/attention/${GlobalDataProvider.id}/${account.id}",data: null,method: HttpUtils.POST,mode: HttpUtils.data);
                             _attentionText="已关注";
                             _attentionIcon=Icons.check;
                           }else{
+                            HttpUtils.request("account/attention/cancel/${GlobalDataProvider.id}/${account.id}",data: null,method: HttpUtils.POST,mode: HttpUtils.data);
                             _attentionText="关注";
                             _attentionIcon=Icons.add;
                           }
@@ -137,14 +138,16 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                     ,
                   ),
                   Positioned(
-                    bottom: 0,
+                    bottom: 280,
                     child: Container(
                       height: 80,
+                      width: 400,
                       decoration: BoxDecoration(
                           color: Colors.black54,
-                          borderRadius: BorderRadius.circular(10)
+                         // borderRadius: BorderRadius.all(Radius.circular(10))
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           SizedBox(width: 10),
                           Column(
@@ -220,36 +223,33 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
     );
   }
   //查询用户
-  Future<BaseResult> getBaseResult(id) async {
+  Future<BaseResult> getBaseResult(emid) async {
     /*await Future.delayed(Duration(seconds: 3), () {
       print("延时三秒后请求数据");
     });*/
 
-    Map map = await HttpUtils.request("account/search/$id",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+    Map map = await HttpUtils.request("account/search/$emid",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
     BaseResult baseResult =  BaseResult.fromJson(map);
     return baseResult;
   }
 
-   _contactsDetailsAlertDialog(content,context){
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text('提示'),
-            content: Text(content),
-            actions: <Widget>[
-              CupertinoButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('确认')
-              ),
-            ],
-          );
-        });
+  attentionState(current) async {
+    int id = await HttpUtils.request("account/get/id/${widget.emid}");
+    bool result =  await HttpUtils.request("account/attention/state/$current/$id");
+    if(result){
+      setState(() {
+        _attentionText="已关注";
+      });
+
+    }
   }
 
-
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    attentionState(GlobalDataProvider.id);
+    super.initState();
+  }
 }
 

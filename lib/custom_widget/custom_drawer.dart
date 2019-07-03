@@ -1,3 +1,4 @@
+import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,15 +22,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559220170429&di=eb6a71ec44ffadac3dfe5ff8a965220b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201810%2F01%2F20181001105435_abwjp.jpg'),
               ),
               accountName:
-                  Text("D", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(GlobalDataProvider.emId, style: TextStyle(fontWeight: FontWeight.bold)),
               accountEmail: Text(
-                "D@qq.com",
+                GlobalDataProvider.token,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             decoration: BoxDecoration(
               color:Colors.cyan,
               image:DecorationImage(
-                image:NetworkImage("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=221593033,8564015&fm=26&gp=0.jpg"),
+                image:NetworkImage("http://pic.616pic.com/bg_w1180/00/24/69/fuRbiNwMtL.jpg"),
                 fit:BoxFit.cover,
                 colorFilter:ColorFilter.mode(Colors.cyan.withOpacity(0.5), BlendMode.screen)
               )

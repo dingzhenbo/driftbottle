@@ -19,7 +19,7 @@ class HttpUtils {
   static Dio dio;
 
   /// default options
-  static const String API_PREFIX = 'http://192.168.43.252:9999/api/';
+  static const String API_PREFIX = 'http://192.168.1.5:9999/api/';
   static const int CONNECT_TIMEOUT = 20000;
   static const int RECEIVE_TIMEOUT = 10000;
 
@@ -33,7 +33,7 @@ class HttpUtils {
   static const String queryParameters = 'queryParameters';
 
   /// request method
-  static Future<Map> request (
+  static Future<dynamic> request (
       String url,
       { data, method, mode}) async {
 

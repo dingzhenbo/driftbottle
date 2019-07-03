@@ -46,7 +46,12 @@ public class FlutterPluginJumpToAct implements MethodChannel.MethodCallHandler, 
         }else if(methodCall.method.equals("loginOut")){
             EMClient.getInstance().logout(true);
             System.out.println("注销账号。");
-
+        }else if(methodCall.method.equals("getCurrentUser")){  //获取登录id
+            String currentUser = EMClient.getInstance().getCurrentUser();
+            result.success(currentUser);
+        }else if(methodCall.method.equals("getToken")){
+            String accessToken = EMClient.getInstance().getAccessToken();
+            result.success(accessToken);
         }
     }
 

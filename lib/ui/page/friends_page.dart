@@ -1,9 +1,11 @@
 
 import 'dart:convert';
 
+import 'package:drift_bottle/custom_widget/common_widget.dart';
 import 'package:drift_bottle/dto/account.dart';
 import 'package:drift_bottle/dto/base_reslut.dart';
 import 'package:drift_bottle/utils/dio_utils.dart';
+import 'package:drift_bottle/utils/type_convert.dart';
 import 'package:flutter/material.dart';
 
 class FriendsPage extends StatefulWidget {
@@ -19,21 +21,27 @@ class _FriendsPageState extends State<FriendsPage> {
         title: MaterialButton(
           child: Text("点我"),
           color:Colors.pink,
-          onPressed: () async {
-
-          },
+          onPressed: test3,
         ),
       ),
-      body: FutureBuilder(
-        future:test2(),
-        builder: (BuildContext context,AsyncSnapshot<BaseResult> snapshot){
-          if(snapshot.hasData){
-            return Text(snapshot.data.result.toString());
+      body:  FutureBuilder(
+        future: test3(),
+        builder: (BuildContext context,AsyncSnapshot<BaseResult> asyncSnapshot){
+          if(asyncSnapshot.hasData){
+            if(asyncSnapshot.data.result=="ok"){
+              List<Account> accountList =TypeConvert.listConvert( asyncSnapshot.data.data,Account());
+
+              return ListView.builder(
+                itemCount: accountList.length,
+                itemBuilder: (context,index){
+                  return CommonWidget.accountListItem((){},title: accountList[index].emId,image: NetworkImage(accountList[index].headPortrait));
+                },
+              );
+            }
+            return Text(asyncSnapshot.data.data.toString());
           }else{
-            //等待数据
-            return Text("加载中。。。。");
+            return Text("加载中。。。");
           }
-         // print(snapshot);
         },
       ),
     );
@@ -50,6 +58,15 @@ class _FriendsPageState extends State<FriendsPage> {
       print(baseResult.success);
 
   }
+
+  
+   Future<BaseResult> test3() async {
+   Map map = await  HttpUtils.request("account/attention/list/7",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+   BaseResult baseResult =  BaseResult.fromJson(map);
+   print("=============================>"+baseResult.result);
+   return baseResult;
+  }
+
 
   Future<BaseResult> test2() async {
     await Future.delayed(Duration(seconds: 3), () {

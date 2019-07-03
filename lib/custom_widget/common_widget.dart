@@ -46,26 +46,21 @@ class CommonWidget {
         onTap: _onTop,
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height:8),
             Row(
               children: <Widget>[
-                SizedBox(
-                  width: 15,
-                ),
+                SizedBox(width: 15),
                 rrectPortrait(image), // <-- 自定义头像小部件
-                SizedBox(
-                  width: 20,
-                ),
+                SizedBox(width: 20),
                 Text(
                   title,
                   style: TextStyle(fontSize: 16),
                 ),
+
               ],
             ),
-            SizedBox(height: 10.0),
-            Divider(color: Colors.black, height: 0.0, indent: 60.0),
+            SizedBox(height: 8),
+            Divider(color: Colors.black54, height: 0.0, indent: 75.0),
           ],
         ),
       ),

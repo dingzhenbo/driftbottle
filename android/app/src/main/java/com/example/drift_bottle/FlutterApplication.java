@@ -4,7 +4,6 @@ package com.example.drift_bottle;
 import android.app.ActivityManager;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 
@@ -19,6 +18,10 @@ public class FlutterApplication extends io.flutter.app.FlutterApplication {
         super.onCreate();
         initEMC();
     }
+
+    /**
+     * 初始化环信
+     */
     private void initEMC(){
         System.out.println("初始化环信====================================================>");
         EMOptions options = new EMOptions();
