@@ -60,7 +60,7 @@ class _ContactsPageState extends State<ContactsPage> {
 
   ///关注列表
   Future<BaseResult> attentionList() async {
-    Map map = await  HttpUtils.request("account/attention/list/${GlobalDataProvider.id}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+    Map map = await  HttpUtils.request("account/attention/list/${GlobalDataProvider.account.id}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
     BaseResult baseResult =  BaseResult.fromJson(map);
     return baseResult;
   }

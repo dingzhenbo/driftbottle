@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:drift_bottle/custom_widget/common_widget.dart';
 import 'package:drift_bottle/dto/account.dart';
 import 'package:drift_bottle/dto/base_reslut.dart';
+import 'package:drift_bottle/utils/channel_utils.dart';
 import 'package:drift_bottle/utils/dio_utils.dart';
 import 'package:drift_bottle/utils/type_convert.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,10 @@ class _FriendsPageState extends State<FriendsPage> {
         title: MaterialButton(
           child: Text("点我"),
           color:Colors.pink,
-          onPressed: test3,
+          onPressed: test4,
         ),
       ),
-      body:  FutureBuilder(
+     /* body: */ /*FutureBuilder(
         future: test3(),
         builder: (BuildContext context,AsyncSnapshot<BaseResult> asyncSnapshot){
           if(asyncSnapshot.hasData){
@@ -43,7 +44,7 @@ class _FriendsPageState extends State<FriendsPage> {
             return Text("加载中。。。");
           }
         },
-      ),
+      )*/
     );
   }
 
@@ -79,5 +80,11 @@ class _FriendsPageState extends State<FriendsPage> {
     Account account =  Account.fromJson(baseResult.data);
     print(account.id.toString());*/
     return baseResult;
+  }
+
+  test4() async {
+    print('执行测试');
+    List list =  await  ChannelUtils.getAllConversations();
+    print("输出结果："+list.toString());
   }
 }

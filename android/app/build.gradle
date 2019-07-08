@@ -59,12 +59,15 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:23.4.0'
-    
+    //implementation 'com.android.support:appcompat-v7:26.1.0'
     //Optional compile for GCM (Google Cloud Messaging).
+    //noinspection GradleCompatible
     implementation 'com.google.android.gms:play-services-gcm:9.4.0'
     implementation 'com.hyphenate:hyphenate-sdk:3.3.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    
+    
 }

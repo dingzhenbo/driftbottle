@@ -12,9 +12,9 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url "https://raw.githubusercontent.com/HyphenateInc/Hyphenate-SDK-Android/master/repository" }
         google()
         jcenter()
+        maven { url "https://raw.githubusercontent.com/HyphenateInc/Hyphenate-SDK-Android/master/repository" }
 
     }
 }

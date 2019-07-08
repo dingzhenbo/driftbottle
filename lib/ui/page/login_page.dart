@@ -1,5 +1,7 @@
 import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart' as prefix0;
+import 'package:drift_bottle/dto/account.dart';
+import 'package:drift_bottle/dto/base_reslut.dart';
 import 'package:drift_bottle/ui/page/home_page.dart';
 import 'package:drift_bottle/ui/page/register_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
@@ -125,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
         width: 270.0,
         child: RaisedButton(
           child: Text('Login', style: Theme.of(context).primaryTextTheme.headline,),
-          color: Colors.cyan,
+          color: Theme.of(context).accentColor,
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               ///只有输入的内容符合要求通过才会到达此处
@@ -135,10 +137,13 @@ class _LoginPageState extends State<LoginPage> {
               String result= await ChannelUtils.login(_loginName,_password);
               if(result=="登录成功"){
                 ///初始化全局数据
-                GlobalDataProvider.emId = await ChannelUtils.getCurrentUser();  //获取当前登录环信id
-                GlobalDataProvider.id =  await HttpUtils.request("account/get/id/${GlobalDataProvider.emId}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+                String emId = await ChannelUtils.getCurrentUser();  //获取当前登录环信id
+               // GlobalDataProvider.id =  await HttpUtils.request("account/get/id/${GlobalDataProvider.emId}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+                Map map =   await HttpUtils.request("account/search/$emId",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
+                GlobalDataProvider.account =  Account.fromJson(BaseResult.fromJson(map).data);
+                print("==========================>头像url"+GlobalDataProvider.account.headPortrait);
                 GlobalDataProvider.token = await ChannelUtils.getToken(); //获取token
-                
+
                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context)=>HomePage()),(Route<dynamic> route)=>false);
               }else{
                 _loginAlertDialog(result);

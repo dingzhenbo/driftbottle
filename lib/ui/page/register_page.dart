@@ -43,7 +43,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       key: _scaffoldkey,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+      //  backgroundColor: Colors.white,
         centerTitle: true,
         title: Text("注册") ,
       ),
@@ -75,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                           child: MaterialButton(
                             child: Text('获取验证码'),
-                            color: Colors.cyan,
+                            color: Theme.of(context).accentColor,
                             onPressed: (){},
                           ),
                         )
@@ -131,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
         height: 45.0,
         width: 270,
         child: RaisedButton(
-          color: Colors.cyan.withOpacity(0.8),
+          color: Theme.of(context).accentColor,
           child: Text("注册"),
           onPressed:registerOnPressed,
           shape: StadiumBorder(side: BorderSide()),

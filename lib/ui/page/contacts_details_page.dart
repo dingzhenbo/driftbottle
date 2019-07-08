@@ -4,6 +4,7 @@ import 'package:drift_bottle/custom_widget/common_widget.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/dto/account.dart';
 import 'package:drift_bottle/dto/base_reslut.dart';
+import 'package:drift_bottle/ui/page/chat_page.dart';
 import 'package:drift_bottle/utils/dio_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(centerTitle: true,title: Text("个人资料"),),
       body: FutureBuilder(
         future:getBaseResult(widget.emid),
         builder:(BuildContext context,AsyncSnapshot<BaseResult> snapshot){
@@ -52,7 +54,7 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                           Row(
                             children: <Widget>[
                               ///头像
-                              CommonWidget.OvalPortrait(NetworkImage(account.headPortrait)),
+                              CommonWidget.ovalPortrait(NetworkImage(account.headPortrait)),
                             ],
                           ),
                           //昵称
@@ -81,10 +83,13 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                   Positioned(
                     top: 30,
                     right: 30,
-                    child: InkWell(
-                      onTap: (){},
+                    child: GestureDetector(
+                      onTap: (){
+                        print('点击私信'+account.emId);
+                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChatScreen(toEmid:account.emId,nickName: account.nickname,handPortrait: account.headPortrait,)));
+                      },
                       child: Chip(
-                        backgroundColor: Colors.black38,
+                        backgroundColor: Colors.blue,
                         label:Container(
                           child: Row(
                             children: <Widget>[
@@ -95,11 +100,8 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                           ),
                         ),
                         padding: EdgeInsets.only(left: 10,right: 10),
-
-                      )
-                      ,
+                      ),
                     )
-                    ,
                   ),
                   Positioned(
                     top:90,
@@ -108,11 +110,11 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                       onTap: (){
                         setState(() {
                           if(_attentionText=="关注"){
-                            HttpUtils.request("account/attention/${GlobalDataProvider.id}/${account.id}",data: null,method: HttpUtils.POST,mode: HttpUtils.data);
+                            HttpUtils.request("account/attention/${GlobalDataProvider.account.id}/${account.id}",data: null,method: HttpUtils.POST,mode: HttpUtils.data);
                             _attentionText="已关注";
                             _attentionIcon=Icons.check;
                           }else{
-                            HttpUtils.request("account/attention/cancel/${GlobalDataProvider.id}/${account.id}",data: null,method: HttpUtils.POST,mode: HttpUtils.data);
+                            HttpUtils.request("account/attention/cancel/${GlobalDataProvider.account.id}/${account.id}",data: null,method: HttpUtils.POST,mode: HttpUtils.data);
                             _attentionText="关注";
                             _attentionIcon=Icons.add;
                           }
@@ -233,12 +235,14 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
     return baseResult;
   }
 
+  //查询关注状态
   attentionState(current) async {
     int id = await HttpUtils.request("account/get/id/${widget.emid}");
     bool result =  await HttpUtils.request("account/attention/state/$current/$id");
     if(result){
       setState(() {
         _attentionText="已关注";
+        _attentionIcon=Icons.check;
       });
 
     }
@@ -248,7 +252,7 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
   @override
   void initState() {
     // TODO: implement initState
-    attentionState(GlobalDataProvider.id);
+    attentionState(GlobalDataProvider.account.id);
     super.initState();
   }
 }

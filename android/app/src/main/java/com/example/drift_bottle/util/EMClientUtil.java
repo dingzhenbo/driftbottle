@@ -2,11 +2,19 @@ package com.example.drift_bottle.util;
 
 import android.app.Activity;
 import android.util.Log;
+import com.example.drift_bottle.entity.MessageDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
 import io.flutter.plugin.common.MethodChannel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EMClientUtil {
 
@@ -48,6 +56,7 @@ public class EMClientUtil {
                             public void run() {
                                 EMClient.getInstance().groupManager().loadAllGroups();
                                 EMClient.getInstance().chatManager().loadAllConversations();
+
                                 Log.d("main", "登录聊天服务器成功！");
                                 result.success("登录成功");
                             }
@@ -132,6 +141,63 @@ public class EMClientUtil {
            //跳转登录
            result.success("not_ok");
        }
+    }
+
+    /**
+     * 发送消息
+     * @param content 文本内容
+     * @param toUsername 对方用户id
+     */
+    public static void sendMessage(String content,String toUsername){
+
+
+        System.out.println("准备发送信息；内容为"+content+"发送给："+toUsername);
+
+        //创建一条文本消息，
+        EMMessage message  = EMMessage.createTxtSendMessage(content,toUsername);
+
+        //发送消息
+        EMClient.getInstance().chatManager().sendMessage(message);
+        System.out.println("===================消息发送成功");
+    }
+
+
+    /**
+     * 聊天记录
+     */
+    public static void chatRecord(String emid,MethodChannel.Result result){
+        System.out.println("开始获取聊天记录======================>");
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(emid);
+        //获取此会话的所有消息
+        List<EMMessage> messages = conversation.getAllMessages();
+        List<MessageDto> messageDtos = new ArrayList<>();
+
+        System.out.println("获取聊天记录完成======================>");
+        System.out.println("聊天记录个数："+messages.size());
+        if (messages!=null){  //存在聊天记录
+
+            for (EMMessage emm:messages) {
+                MessageDto messageDto = new MessageDto();
+                messageDto.setFrom(emm.getFrom());
+                messageDto.setContent_type(emm.getType().toString());
+                String str = emm.getBody().toString();
+                String content = str.substring(5,str.length()-1);
+                messageDto.setContent(content);
+
+                messageDtos.add(messageDto);
+            }
+
+        }
+
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            System.out.println("聊天记录======================》"+ mapper.writeValueAsString(messageDtos));
+            result.success( mapper.writeValueAsString(messageDtos));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }
 

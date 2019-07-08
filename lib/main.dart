@@ -1,5 +1,6 @@
 
 import 'package:drift_bottle/ui/page/chat_page.dart';
+import 'package:drift_bottle/ui/page/friends_page.dart';
 import 'package:drift_bottle/ui/page/home_page.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_widget/global_data_provider.dart';
+import 'dto/account.dart';
+import 'dto/base_reslut.dart';
 void main() async{
 
   AutoLogin.autoLogin= await ChannelUtils.autoLogin();
@@ -28,9 +31,11 @@ class AutoLogin{
 
   ///初始化全局数据
   static globalDataInit() async {
-    GlobalDataProvider.emId= await ChannelUtils.getCurrentUser();
-    GlobalDataProvider.id =  await HttpUtils.request("account/get/id/${GlobalDataProvider.emId}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
-    GlobalDataProvider.token = await ChannelUtils.getToken();
+    ///初始化全局数据
+    String emId = await ChannelUtils.getCurrentUser();  //获取当前登录环信id
+    Map map =   await HttpUtils.request("account/search/$emId",data: null,method: HttpUtils.GET,mode: HttpUtils.data); //获取登录用户信息
+    GlobalDataProvider.account =  Account.fromJson(BaseResult.fromJson(map).data);
+    GlobalDataProvider.token = await ChannelUtils.getToken(); //获取token
   }
 }
 
@@ -41,7 +46,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.cyan),
+    //  theme: ThemeData(appBarTheme: AppBarTheme(color: Colors.yellow.withOpacity(0.8))),
       debugShowCheckedModeBanner: false,
       home:MyHome()
     );
