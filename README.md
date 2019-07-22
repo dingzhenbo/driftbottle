@@ -18,7 +18,7 @@
 <img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763974.png" width = "250" height = "500" div align=center />
 
 *  会话
-<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763974.png" width = "250" height = "500" div align=center />
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763987.png" width = "250" height = "500" div align=center />
 
 *  搜索
 <img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563764003.png" width = "250" height = "500" div align=center />
