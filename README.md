@@ -7,8 +7,8 @@
 
 
 *  登录
-
-
+<img src="
+https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763883.png" width="200px" />   
 *  注册
 <img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763940.png" width = "250" height = "500" div align=center />
 
