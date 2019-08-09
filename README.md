@@ -1,16 +1,33 @@
 # flutter 社交app 集成环信IM
 
-A new Flutter project.
+一个集成环信IM的Flutter项目。目前只是Android与flutter双向交互， 已完成功能：注册、登录、退出登录、自动登录、切换头像、切换主题、搜索好友、关注好友、 取消关注、发送文本消息 还有很多模块待开发。。。
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+# 效果图
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+*  登录
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763940.png" width = "250" height = "500" div align=center />
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+*  注册
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763940.png" width = "250" height = "500" div align=center />
+
+*  关注
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763969.png" width = "250" height = "500" div align=center />
+
+*  个人信息
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763974.png" width = "250" height = "500" div align=center />
+
+*  会话
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763987.png" width = "250" height = "500" div align=center />
+
+*  搜索
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563764003.png" width = "250" height = "500" div align=center />
+
+* 个人资料
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563764364.png" width = "250" height = "500" div align=center />
+
+* 聊天
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563764397.png" width = "250" height = "500" div align=center />
+<img src="https://driftbottle.oss-cn-beijing.aliyuncs.com/picture/Screenshot_1563763883.png" width = "250" height = "500" align=center />
+
