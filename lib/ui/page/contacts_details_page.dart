@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_bottle/custom_widget/common_widget.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/dto/account.dart';
@@ -38,7 +39,7 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                   Container(
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: NetworkImage(account.cardPicture),
+                            image:CachedNetworkImageProvider(account.cardPicture),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(Colors.black, BlendMode.screen)
                         ),
@@ -54,7 +55,7 @@ class _ContactsDetailsPageState extends State<ContactsDetailsPage> {
                           Row(
                             children: <Widget>[
                               ///头像
-                              CommonWidget.ovalPortrait(NetworkImage(account.headPortrait)),
+                              CommonWidget.ovalPortrait(CachedNetworkImageProvider(account.headPortrait)),
                             ],
                           ),
                           //昵称

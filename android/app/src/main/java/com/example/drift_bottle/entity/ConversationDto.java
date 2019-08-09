@@ -8,7 +8,14 @@ public class ConversationDto implements Serializable {
     private int unread; //未读消息数量
     private String lastMessage; //最后一条消息
     private String lastMessageTime;//接收最后一条消息时间
+    private String lastMessageId;  //接收最后一条消息id
 
+    public String getLastMessageId() {
+        return lastMessageId;
+    }
+    public void setLastMessageId(String lastMessageId) {
+        this.lastMessageId = lastMessageId;
+    }
     public void setEmid(String emid) {
         this.emid = emid;
     }

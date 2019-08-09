@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/ui/page/login_page.dart';
 import 'package:drift_bottle/utils/channel_utils.dart';
@@ -15,44 +16,45 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
+              accountName:Text(GlobalDataProvider.account.nickname,style: TextStyle(fontWeight: FontWeight.w300),),
+              accountEmail: Text(GlobalDataProvider.account.email,style: TextStyle(fontWeight: FontWeight.w300),),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559220170429&di=eb6a71ec44ffadac3dfe5ff8a965220b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201810%2F01%2F20181001105435_abwjp.jpg'),
+                backgroundImage:CachedNetworkImageProvider("http://b-ssl.duitang.com/uploads/item/201811/30/20181130175306_pxrzb.jpg",errorListener: (){}),
               ),
-              accountName:
-                  Text(GlobalDataProvider.account.emId, style: TextStyle(fontWeight: FontWeight.bold)),
-              accountEmail: Text(
-                GlobalDataProvider.token,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+
             decoration: BoxDecoration(
-              color:Colors.cyan,
-              image:DecorationImage(
+              color:Theme.of(context).accentColor.withOpacity(0.8),
+             /* image:DecorationImage(
                 image:NetworkImage("http://pic.616pic.com/bg_w1180/00/24/69/fuRbiNwMtL.jpg"),
                 fit:BoxFit.cover,
-                colorFilter:ColorFilter.mode(Colors.cyan.withOpacity(0.5), BlendMode.screen)
-              )
+               // colorFilter:ColorFilter.mode(Colors.cyan.withOpacity(0.5), BlendMode.screen)
+              )*/
             ),
           ),
           SizedBox(height: 10),
           ListTile(
+            contentPadding: EdgeInsets.zero,
             title: Text("夜间模式"),
             leading: Icon(Icons.brightness_2,size: 25),
             onTap: (){},
           ),
           ListTile(
+            contentPadding: EdgeInsets.zero,
             title: Text("附近的人"),
             leading: Icon(Icons.add_location,size: 25),
             onTap: (){},
           ),
           ListTile(
+            contentPadding: EdgeInsets.zero,
             title: Text("设置"),
             leading: Icon(Icons.settings,size: 25),
             onTap: (){},
           ),
           ListTile(
+            contentPadding: EdgeInsets.zero,
             title: Text("注销"),
             leading: Icon(Icons.block,size: 25),
             onTap: (){

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_bottle/custom_widget/common_widget.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/dto/account.dart';
@@ -14,8 +15,9 @@ import 'package:flutter/material.dart';
 
 //单条聊天信息控件
 class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text});
+  ChatMessage({this.text,this.offstage});
   final String text;
+  final bool offstage;
   @override
   Widget build(BuildContext context) {
     return  Container(
@@ -24,6 +26,12 @@ class ChatMessage extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          Offstage(
+            offstage:offstage,
+            child: Container(
+              child: Icon(Icons.error,color: Colors.red,),
+            ),
+          ),
           Container(
             padding: EdgeInsets.all(5.0),
             decoration: BoxDecoration(
@@ -36,7 +44,7 @@ class ChatMessage extends StatelessWidget {
           SizedBox(width: 10,),
           Container(
             margin:  EdgeInsets.only(right: 16.0),
-            child:CommonWidget.chatOvalPortrait(NetworkImage(GlobalDataProvider.account.headPortrait)),      //显示头像圆圈
+            child:CommonWidget.chatOvalPortrait(CachedNetworkImageProvider(GlobalDataProvider.account.headPortrait)),      //显示头像圆圈
           )
         ],
       ),
@@ -60,7 +68,7 @@ class FromChatMessage extends StatelessWidget {
         children: <Widget>[
           Container(
             margin:  EdgeInsets.only(right: 16.0),
-            child:CommonWidget.chatOvalPortrait(NetworkImage(headPortrait)),      //显示头像圆圈
+            child:CommonWidget.chatOvalPortrait(CachedNetworkImageProvider(headPortrait)),      //显示头像圆圈
           ),
           SizedBox(width: 10),
           Container(
@@ -85,7 +93,9 @@ class ChatScreen extends StatefulWidget {
   final String toEmid;  //对方环信id
   final String nickName; //对方昵称
   final String handPortrait; //对方的头像
-  ChatScreen({this.toEmid,this.nickName,this.handPortrait});
+  final  String lastMessageId;//最后一条聊天记录消息id
+  String fastMessageId;
+  ChatScreen({this.toEmid,this.nickName,this.handPortrait,this.lastMessageId});
   @override
   State createState() => new ChatScreenState();   //ChatScreenState作为控制ChatScreen控件状态的子类
 }
@@ -94,18 +104,32 @@ class ChatScreen extends StatefulWidget {
 class ChatScreenState extends State<ChatScreen>{
   final List<Widget> _messages = <Widget>[];    //存放聊天记录的数组，数组类型为无状态控件ChatMessage
   final TextEditingController _textController = new TextEditingController();    //聊天窗口的文本输入控件
-
+  String fastMassage;
+  ScrollController _scrollController = new ScrollController();
+  bool isPerformingRequest = false; // 是否有请求正在进行
   //定义发送文本事件的处理函数
-  void _handleSubmitted(String text) {
+  Future _handleSubmitted(String text) async {
     _textController.clear();        //清空输入框
-    ChatMessage message = new ChatMessage(    //定义新的消息记录控件对象
-      text: text);
-    print("发送信息"+widget.toEmid+"内容为"+text);
-    ChannelUtils.sendMessage(text,widget.toEmid);
-    //状态变更，向聊天记录中插入新记录
-    setState(() {
-      _messages.add(message);      //插入新的消息记录
-    });
+    bool b = await ChannelUtils.isConnected();
+    if(b){
+      ChatMessage message = new ChatMessage(    //定义新的消息记录控件对象
+          text: text,offstage: true,);
+      ChannelUtils.sendMessage(text,widget.toEmid);
+      //状态变更，向聊天记录中插入新记录
+      setState(() {
+        _messages.add(message);      //插入新的消息记录
+      });
+    }else{
+      ChatMessage message = new ChatMessage(text: text,offstage: false,);
+
+
+      //状态变更，向聊天记录中插入新记录
+      setState(() {
+        _messages.add(message);      //插入新的消息记录
+      });
+    }
+
+
   }
 
   //定义文本输入框控件
@@ -131,8 +155,23 @@ class ChatScreenState extends State<ChatScreen>{
         )
     );
   }
+
+  Widget _buildProgressIndicator() {
+    return Offstage(
+      offstage: !isPerformingRequest,
+      child: new Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: new Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
+    );
+  }
+
+
   //定义整个聊天窗口的页面元素布局
   Widget build(BuildContext context) {
+
     return  Scaffold(              //页面脚手架
       appBar:  AppBar(
           centerTitle: true,
@@ -140,13 +179,14 @@ class ChatScreenState extends State<ChatScreen>{
       ),      //页面标题
       body:  Column(             //Column使消息记录和消息输入框垂直排列
           children: <Widget>[
+            _buildProgressIndicator(),
             Flexible(                     //子控件可柔性填充，如果下方弹出输入框，使消息记录列表可适当缩小高度
                 child:  ListView.builder(
                   //可滚动显示的消息列表
                   padding:  EdgeInsets.all(8.0),
-                //  reverse: true,                  //反转排序，列表信息从下至上排列
                   itemBuilder: (context,index) => _messages[index],    //插入聊天信息控件
                   itemCount: _messages.length,
+                  controller: _scrollController,
                 )
             ),
             Divider(height: 1.0),      //聊天记录和输入框之间的分隔
@@ -163,43 +203,105 @@ class ChatScreenState extends State<ChatScreen>{
   void initState() {
     // TODO: implement initState
     ChannelUtils.eventChannel.receiveBroadcastStream().listen(onDate);
+    ChannelUtils.clearUnread(widget.toEmid); //消息设置已读
     initChatRecord();
-    ChannelUtils.clearUnread(widget.toEmid);
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.minScrollExtent) {
+        _getMoreData();
+      }
+    });
+
+  }
+
+  Future _getMoreData() async {
+
+    if(!isPerformingRequest){
+
+      setState(() {
+        isPerformingRequest =true;
+      });
+      if(fastMassage!=null){
+        List<Message>  messages= await  ChannelUtils.chatRecord(widget.toEmid,fastMassage);
+        if(messages.length>0){
+          fastMassage = messages[0].messageId;
+          for(Message message in messages){
+            setState(() {
+              if(message.from==GlobalDataProvider.account.emId){
+                _messages.insert(0,ChatMessage(text:message.content,offstage: true));
+              }else{
+                _messages.insert(0,FromChatMessage(text: message.content,headPortrait: widget.handPortrait,));
+              }
+            });
+          }
+        }
+
+      }
+
+      setState(() {
+        isPerformingRequest=false;
+      });
+
+
+
+    }
+
+
+  }
+
+
+  @override
+  void dispose() {
+    //ChannelUtils.eventChannel.receiveBroadcastStream().listen(onDate).pause();
+    super.dispose();
   }
   //历史消息记录
   initChatRecord() async {
-   List<Message> messages =  await ChannelUtils.chatRecord(widget.toEmid);
-   for(Message message in messages){
-     print('聊天记录对象============>'+message.from);
-     setState(() {
-       if(message.from==GlobalDataProvider.account.emId){
-         _messages.add(ChatMessage(text:message.content));
-       }else{
-         _messages.add(FromChatMessage(text: message.content,headPortrait: widget.handPortrait,));
-       }
-     });
+   List<Message> messages =  await ChannelUtils.chatRecord(widget.toEmid,widget.lastMessageId);
+    if(messages.length>0){
+      fastMassage = messages[0].messageId;
 
-   }
+      for(Message message in messages){
+        setState(() {
+          if(message.from==GlobalDataProvider.account.emId){
+            _messages.add(ChatMessage(text:message.content,offstage: true));
+          }else{
+            _messages.add(FromChatMessage(text: message.content,headPortrait: widget.handPortrait,));
+          }
+        });
+      }
+    }
+
   }
 
    //消息接收监听
-   onDate(event) async {
-   List list =  json.decode(event);
+   onDate(event) {
+   switch (event) {
+     case "user_removed":
+       CommonWidget.connectionAlertDialog((){},context,"确定","账号被移除！");
+       break;
+     case "user_login_another_device":
+       CommonWidget.connectionAlertDialog((){},context,"确定","您的账号已在其他设备登录");
+       break;
+   }
 
+   List list =  json.decode(event);
    List<Message> messageList = TypeConvert.listConvert(list,Message());
    if(messageList[0].from==widget.toEmid){
      for(Message message in messageList){
-      //Map map = await HttpUtils.request("account/search/${message.from}",data: null,method: HttpUtils.GET,mode: HttpUtils.data);
-      //BaseResult baseResult =  BaseResult.fromJson(map);
-    //  Account account =  Account.fromJson(baseResult.data);
        FromChatMessage fromChatMessage = new FromChatMessage(text: message.content,headPortrait: widget.handPortrait);
+       if (!mounted) {
+         return;
+       }
        setState(() {
          _messages.add(fromChatMessage);
-       });
+         ChannelUtils.clearUnread(widget.toEmid); //消息设置已读
 
+       });
      }
    }
+
+
 
   }
 }

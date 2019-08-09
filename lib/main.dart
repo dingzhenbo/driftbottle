@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_bottle/ui/page/chat_page.dart';
 import 'package:drift_bottle/ui/page/friends_page.dart';
 import 'package:drift_bottle/ui/page/home_page.dart';
@@ -102,11 +103,13 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin{
   Widget build(BuildContext context) {
     return FadeTransition(//透明度动画组件
       opacity: _animation, //动画
-      child: Image.network(
-        'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1260314136,334816822&fm=26&gp=0.jpg',
-        fit: BoxFit.cover, //图片铺满
-        scale: 2.0, //进行缩放
-      ),
+      child: CachedNetworkImage(imageUrl:"https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1260314136,334816822&fm=26&gp=0.jpg",fit: BoxFit.cover,),
+
+     /*   child: Image.network(
+          'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1260314136,334816822&fm=26&gp=0.jpg',
+          fit: BoxFit.cover, //图片铺满
+          scale: 2.0, //进行缩放
+        )*/
 
     );
   }

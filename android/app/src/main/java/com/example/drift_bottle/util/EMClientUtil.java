@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
+import com.hyphenate.chat.EMChatManager;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -158,18 +159,19 @@ public class EMClientUtil {
 
         //发送消息
         EMClient.getInstance().chatManager().sendMessage(message);
-        System.out.println("===================消息发送成功");
+
     }
 
 
     /**
      * 聊天记录
      */
-    public static void chatRecord(String emid,MethodChannel.Result result){
+    public static void chatRecord(String emid,String lastMessageId,MethodChannel.Result result){
         System.out.println("开始获取聊天记录======================>");
         EMConversation conversation = EMClient.getInstance().chatManager().getConversation(emid);
         //获取此会话的所有消息
-        List<EMMessage> messages = conversation.getAllMessages();
+        List<EMMessage> messages = conversation.loadMoreMsgFromDB(lastMessageId, 20);
+       // List<EMMessage> messages = conversation.getAllMessages();
         List<MessageDto> messageDtos = new ArrayList<>();
 
         System.out.println("获取聊天记录完成======================>");
@@ -179,13 +181,24 @@ public class EMClientUtil {
             for (EMMessage emm:messages) {
                 MessageDto messageDto = new MessageDto();
                 messageDto.setFrom(emm.getFrom());
+                messageDto.setMessageId(emm.getMsgId());
                 messageDto.setContent_type(emm.getType().toString());
                 String str = emm.getBody().toString();
                 String content = str.substring(5,str.length()-1);
                 messageDto.setContent(content);
-
                 messageDtos.add(messageDto);
             }
+
+            EMMessage message = conversation.getMessage(lastMessageId, false);
+            MessageDto lastMessage = new MessageDto();
+            lastMessage.setContent_type(message.getType().toString());
+            lastMessage.setFrom(message.getFrom());
+            String str = message.getBody().toString();
+            String content = str.substring(5,str.length()-1);
+            lastMessage.setContent(content);
+            messageDtos.add(lastMessage);
+
+
 
         }
 

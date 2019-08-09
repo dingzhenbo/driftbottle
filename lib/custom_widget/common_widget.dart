@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CommonWidget {
@@ -150,5 +151,21 @@ class CommonWidget {
 
       ],
     );
+  }
+
+  //Stream 对话框
+  static connectionAlertDialog(void _onPressed(),context, buttonText, content) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text('警告'),
+            content: Text(content),
+            actions: <Widget>[
+              CupertinoButton(onPressed:_onPressed, child: Text(buttonText)),
+            ],
+          );
+        });
   }
 }

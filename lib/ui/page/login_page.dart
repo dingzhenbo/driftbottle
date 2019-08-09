@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart' as prefix0;
 import 'package:drift_bottle/dto/account.dart';
@@ -248,10 +249,9 @@ class _LoginPageState extends State<LoginPage> {
   Center buildPortrait() {
     return Center(
       child: ClipOval(
-        child: Image.network(
-          'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559220170429&di=eb6a71ec44ffadac3dfe5ff8a965220b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201810%2F01%2F20181001105435_abwjp.jpg',
-          width:120,
-          height:120,
+        child: CachedNetworkImage(imageUrl: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559220170429&di=eb6a71ec44ffadac3dfe5ff8a965220b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201810%2F01%2F20181001105435_abwjp.jpg",
+          width: 120,
+          height: 120,
           fit: BoxFit.cover,
         ),
       ),

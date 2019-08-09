@@ -69,12 +69,16 @@ class ChannelUtils{
   }
 
    //聊天记录
-   static Future<List<Message>> chatRecord(String emid) async {
-    String chatRecord = await _channel.invokeMethod("chatRecord",{"emid":emid});
-    List list =  json.decode(chatRecord);
+   static Future<List<Message>> chatRecord(String emid,String lastMessageId) async {
+     List<Message> messages = new List();
+    if(lastMessageId.isNotEmpty){
+      String chatRecord = await _channel.invokeMethod("chatRecord",{"emid":emid,"lastMessageId":lastMessageId});
+      List list =  json.decode(chatRecord);
 
-    List<Message> messages = TypeConvert.listConvert(list,Message());
-    return messages;
+      messages = TypeConvert.listConvert(list,Message());
+
+    }
+     return messages;
   }
 
 
@@ -82,5 +86,13 @@ class ChannelUtils{
   static clearUnread(String emid){
     _channel.invokeMethod("clearUnread",{"emid":emid});
   }
+
+
+  //是否连接服务器
+  static Future<bool> isConnected() async {
+    bool b = await _channel.invokeMethod("isConnected");
+    return b;
+  }
+
 
 }

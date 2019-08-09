@@ -20,7 +20,7 @@ class _ConversationPageState extends State<ConversationPage> {
               itemCount: asyncSnapshot.data.length,
               itemBuilder:(context,index){
                 return CommonWidget.conversationListItem((){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChatScreen(toEmid: asyncSnapshot.data[index].emid,nickName: asyncSnapshot.data[index].nickName,handPortrait: asyncSnapshot.data[index].headportrait,)));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChatScreen(toEmid: asyncSnapshot.data[index].emid,nickName: asyncSnapshot.data[index].nickName,handPortrait: asyncSnapshot.data[index].headportrait,lastMessageId: asyncSnapshot.data[index].lastMessageId,)));
                 },nickName: asyncSnapshot.data[index].nickName,image: NetworkImage(asyncSnapshot.data[index].headportrait),lastMessage: asyncSnapshot.data[index].lastMessage,lastMessageTime: asyncSnapshot.data[index].lastMessageTime,unread: asyncSnapshot.data[index].unread);
               }
           );

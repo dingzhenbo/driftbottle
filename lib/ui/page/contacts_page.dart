@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_bottle/custom_widget/common_widget.dart';
 import 'package:drift_bottle/custom_widget/global_data_provider.dart';
 import 'package:drift_bottle/dto/account.dart';
@@ -45,7 +46,7 @@ class _ContactsPageState extends State<ContactsPage> {
                 return CommonWidget.accountListItem((){
                   //TODO 路由用户详情信息界面
                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ContactsDetailsPage(emid: accountList[index].emId)));
-                },title: accountList[index].nickname,image: NetworkImage(accountList[index].headPortrait));
+                },title: accountList[index].nickname,image: CachedNetworkImageProvider(accountList[index].headPortrait));
                 },
               );
             }

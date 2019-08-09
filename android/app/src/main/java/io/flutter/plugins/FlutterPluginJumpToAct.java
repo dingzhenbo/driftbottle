@@ -80,6 +80,7 @@ public class FlutterPluginJumpToAct implements MethodChannel.MethodCallHandler, 
             conversations.forEach((key,value)->{
                 ConversationDto conversationDto = new ConversationDto();
                 conversationDto.setEmid(key);
+                conversationDto.setLastMessageId(value.getLastMessage().getMsgId());
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                 Date date  = new Date(value.getLastMessage().getMsgTime());
                 conversationDto.setLastMessageTime(simpleDateFormat.format(date));
@@ -101,11 +102,15 @@ public class FlutterPluginJumpToAct implements MethodChannel.MethodCallHandler, 
 
         }else if(methodCall.method.equals("chatRecord")){
             String emid = methodCall.argument("emid");
-            EMClientUtil.chatRecord(emid,result);
+            String lastMessage = methodCall.argument("lastMessageId");
+            EMClientUtil.chatRecord(emid,lastMessage,result);
         }else if(methodCall.method.equals("clearUnread")){
             String emid = methodCall.argument("emid");
             EMConversation conversation = EMClient.getInstance().chatManager().getConversation(emid);
             conversation.markAllMessagesAsRead();
+        }else if(methodCall.method.equals("isConnected")){  //是否连接聊天服务器
+           Boolean bool =   EMClient.getInstance().isConnected();
+           result.success(bool);
         }
     }
 
